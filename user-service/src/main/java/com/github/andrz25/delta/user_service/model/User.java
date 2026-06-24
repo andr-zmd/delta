@@ -43,11 +43,12 @@ public class User {
     }
 
     private User(String fullName, String username, String email, LocalDate dateOfBirth,
-            Role role) {
+            String phoneNumber, Role role) {
         this.fullName = fullName;
         this.username = username;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
+        this.phoneNumber = phoneNumber;
         this.role = role;
     }
 
@@ -56,6 +57,7 @@ public class User {
         private String username;
         private String email;
         private LocalDate dateOfBirth;
+        private String phoneNumber;
         private Role role;
 
         public void setFullName(String fullName) {
@@ -74,12 +76,16 @@ public class User {
             this.dateOfBirth = dateOfBirth;
         }
 
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
+
         public void setRole(Role role) {
             this.role = role;
         }
 
         public User build() {
-            return new User(fullName, username, email, dateOfBirth, role);
+            return new User(fullName, username, email, dateOfBirth, phoneNumber, role);
         }
     }
 }
