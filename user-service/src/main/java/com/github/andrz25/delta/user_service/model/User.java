@@ -82,28 +82,34 @@ public class User {
         private String phoneNumber;
         private Role role;
 
-        public void setFullName(String fullName) {
+        public Builder setFullName(String fullName) {
             this.fullName = fullName;
+            return this;
         }
 
-        public void setUsername(String username) {
+        public Builder setUsername(String username) {
             this.username = username;
+            return this;
         }
 
-        public void setEmail(String email) {
+        public Builder setEmail(String email) {
             this.email = email;
+            return this;
         }
 
-        public void setDateOfBirth(LocalDate dateOfBirth) {
+        public Builder setDateOfBirth(LocalDate dateOfBirth) {
             this.dateOfBirth = dateOfBirth;
+            return this;
         }
 
-        public void setPhoneNumber(String phoneNumber) {
+        public Builder setPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
+            return this;
         }
 
-        public void setRole(Role role) {
+        public Builder setRole(Role role) {
             this.role = role;
+            return this;
         }
 
         public User build() {
