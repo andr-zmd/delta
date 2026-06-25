@@ -1,6 +1,9 @@
 package com.github.andrz25.delta.user_service.model;
 
 import java.time.LocalDate;
+
+import com.github.andrz25.delta.user_service.validation.ValidPhoneNumber;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -49,10 +52,8 @@ public class User {
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    // TODO: Use libphonenumber for validation
     @NotBlank(message = "Phone number must not be null or blank")
-    @Size(min = 7, max = 20, message = "Phone number must be between 7-20 characters")
-    @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Invalid phone number format")
+    @ValidPhoneNumber
     @Column(name = "phone_number", nullable = false, unique = true, length = 20)
     private String phoneNumber;
 
