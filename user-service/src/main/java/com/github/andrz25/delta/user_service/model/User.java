@@ -117,4 +117,38 @@ public class User {
             return new User(fullName, username, email, dateOfBirth, phoneNumber, role);
         }
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", fullName=" + fullName + ", username=" + username + ", email=" + email
+                + ", dateOfBirth=" + dateOfBirth + ", phoneNumber=" + phoneNumber + ", role=" + role + "]";
+    }
 }
