@@ -31,7 +31,6 @@ public class User {
 
     @NotBlank(message = "Full name cannot be blank")
     @Size(max = 255, message = "Full name must not exceed 255 characters")
-    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$", message = "Invalid full name format")
     @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 
