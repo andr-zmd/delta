@@ -44,8 +44,8 @@ public class User {
     @Column(name = "email_address", nullable = false, unique = true, length = 255)
     private String email;
 
-    @NotNull
-    @Past
+    @NotNull(message = "Date of birth not be null")
+    @Past(message = "Date of birth must be in the past")
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
