@@ -1,13 +1,13 @@
 package com.github.andrz25.delta.user_service.model;
 
-import java.time.LocalDate;
-
 import com.github.andrz25.delta.user_service.validation.ValidPhoneNumber;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -17,8 +17,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
@@ -26,7 +26,11 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq_gen")
-    @SequenceGenerator(name = "user_seq_gen", sequenceName = "user_seq", initialValue = 1, allocationSize = 50)
+    @SequenceGenerator(
+            name = "user_seq_gen",
+            sequenceName = "user_seq",
+            initialValue = 1,
+            allocationSize = 50)
     private Long id;
 
     @NotBlank(message = "Full name cannot be blank")
@@ -61,11 +65,15 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    protected User() {
-    }
+    protected User() {}
 
-    private User(String fullName, String username, String email, LocalDate dateOfBirth,
-            String phoneNumber, Role role) {
+    private User(
+            String fullName,
+            String username,
+            String email,
+            LocalDate dateOfBirth,
+            String phoneNumber,
+            Role role) {
         this.fullName = fullName;
         this.username = username;
         this.email = email;
@@ -175,7 +183,20 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", fullName=" + fullName + ", username=" + username + ", email=" + email
-                + ", dateOfBirth=" + dateOfBirth + ", phoneNumber=" + phoneNumber + ", role=" + role + "]";
+        return "User [id="
+                + id
+                + ", fullName="
+                + fullName
+                + ", username="
+                + username
+                + ", email="
+                + email
+                + ", dateOfBirth="
+                + dateOfBirth
+                + ", phoneNumber="
+                + phoneNumber
+                + ", role="
+                + role
+                + "]";
     }
 }
