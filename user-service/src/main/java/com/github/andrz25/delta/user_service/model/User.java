@@ -1,7 +1,5 @@
 package com.github.andrz25.delta.user_service.model;
 
-import com.github.andrz25.delta.user_service.validation.ValidPhoneNumber;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,12 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
@@ -33,34 +25,21 @@ public class User {
             allocationSize = 50)
     private Long id;
 
-    @NotBlank(message = "Full name cannot be blank")
-    @Size(max = 255, message = "Full name must not exceed 255 characters")
     @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 
-    @NotBlank(message = "Username cannot be blank")
-    @Size(min = 3, max = 50, message = "Username must be between 3 to 50 characters")
-    @Pattern(regexp = "^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$", message = "Invalid username format")
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
-    @NotBlank(message = "Email address cannot be blank")
-    @Email(message = "A valid email address must be provided")
-    @Size(max = 255, message = "Email address must not exceed 255 characters")
     @Column(name = "email_address", nullable = false, unique = true, length = 255)
     private String email;
 
-    @NotNull(message = "Date of birth not be null")
-    @Past(message = "Date of birth must be in the past")
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @NotBlank(message = "Phone number must not be null or blank")
-    @ValidPhoneNumber
     @Column(name = "phone_number", nullable = false, unique = true, length = 20)
     private String phoneNumber;
 
-    @NotNull(message = "Role must not be null")
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
