@@ -3,6 +3,8 @@ package com.github.andrz25.delta.user_service.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.github.andrz25.delta.user_service.exception.DuplicateResourceException;
@@ -75,6 +77,8 @@ class UserServiceTest {
                 () -> {
                     userService.registerUser(request);
                 });
+
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
@@ -96,5 +100,7 @@ class UserServiceTest {
                 () -> {
                     userService.registerUser(request);
                 });
+
+        verify(userRepository, never()).save(any(User.class));
     }
 }
