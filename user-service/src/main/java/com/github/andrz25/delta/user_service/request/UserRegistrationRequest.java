@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
-public record UserRequest(
+public record UserRegistrationRequest(
         @NotBlank(message = "Full name cannot be blank")
                 @Size(max = 255, message = "Full name must not exceed 255 characters")
                 String fullName,
