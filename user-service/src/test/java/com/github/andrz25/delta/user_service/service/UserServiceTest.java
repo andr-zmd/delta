@@ -12,6 +12,7 @@ import com.github.andrz25.delta.user_service.model.Role;
 import com.github.andrz25.delta.user_service.model.User;
 import com.github.andrz25.delta.user_service.repository.UserRepository;
 import com.github.andrz25.delta.user_service.request.UserRegistrationRequest;
+import com.github.andrz25.delta.user_service.request.UserUpdateRequest;
 import com.github.andrz25.delta.user_service.response.UserResponse;
 
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -102,5 +104,96 @@ class UserServiceTest {
                 });
 
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void givenValidUserUpdateRequest_whenUpdateUser_thenReturnUserResponse() {
+        // Arrange
+        Long id = 1L;
+        UserUpdateRequest request =
+                new UserUpdateRequest("Jake Doe", "jkde05", "jakedoe@xyz.com", "11987654321");
+
+        User existingUser =
+                new User.Builder()
+                        .setFullName("John Doe")
+                        .setUsername("jnde05")
+                        .setEmail("johndoe@xyz.com")
+                        .setDateOfBirth(LocalDate.of(2005, 7, 1))
+                        .setPhoneNumber("12345678910")
+                        .setRole(Role.USER)
+                        .build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.existsByEmailAndIdNot(request.email(), id)).thenReturn(false);
+        when(userRepository.existsByUsernameAndIdNot(request.username(), id)).thenReturn(false);
+        when(userRepository.save(any(User.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        UserResponse response = userService.updateUser(id, request);
+
+        // Assert
+        assertEquals(request.fullName(), response.fullName());
+        assertEquals(request.username(), response.username());
+        assertEquals(request.email(), response.email());
+        assertEquals(existingUser.getDateOfBirth(), response.dateOfBirth());
+        assertEquals(request.phoneNumber(), response.phoneNumber());
+        assertEquals(existingUser.getRole(), response.role());
+
+        verify(userRepository).existsByEmailAndIdNot(request.email(), id);
+        verify(userRepository).existsByUsernameAndIdNot(request.username(), id);
+    }
+
+    @Test
+    void givenDuplicateEmail_whenUpdateUser_thenThrowDuplicateResourceException() {
+        // Arrange
+        Long id = 1L;
+        UserUpdateRequest request =
+                new UserUpdateRequest("John Doe", "jnde05", "johndoe05@xyz.com", "12345678910");
+
+        User existingUser =
+                new User.Builder()
+                        .setFullName("John Doe")
+                        .setUsername("jnde05")
+                        .setEmail("johndoe@xyz.com")
+                        .setDateOfBirth(LocalDate.of(2005, 7, 1))
+                        .setPhoneNumber("12345678910")
+                        .setRole(Role.USER)
+                        .build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.existsByEmailAndIdNot(request.email(), id)).thenReturn(true);
+
+        // Act & Assert
+        assertThrows(DuplicateResourceException.class, () -> userService.updateUser(id, request));
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void givenDuplicateUsername_whenUpdateUser_thenThrowDuplicateResourceException() {
+        // Arrange
+        Long id = 1L;
+        UserUpdateRequest request =
+                new UserUpdateRequest("John Doe", "jnde2005", "johndoe@xyz.com", "12345678910");
+
+        User existingUser =
+                new User.Builder()
+                        .setFullName("John Doe")
+                        .setUsername("jnde05")
+                        .setEmail("johndoe@xyz.com")
+                        .setDateOfBirth(LocalDate.of(2005, 7, 1))
+                        .setPhoneNumber("12345678910")
+                        .setRole(Role.USER)
+                        .build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.existsByEmailAndIdNot(request.email(), id)).thenReturn(false);
+        when(userRepository.existsByUsernameAndIdNot(request.username(), id)).thenReturn(true);
+
+        // Act & Assert
+        assertThrows(DuplicateResourceException.class, () -> userService.updateUser(id, request));
+
+        verify(userRepository, never()).save(any());
     }
 }
