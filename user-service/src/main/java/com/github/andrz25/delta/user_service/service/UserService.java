@@ -40,16 +40,14 @@ public class UserService {
                         .setRole(Role.USER)
                         .build();
 
-        User saved;
-
         try {
-            saved = userRepository.save(user);
+            User saved = userRepository.save(user);
+
+            return new UserResponse(saved);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateResourceException(
                     "An account with this username or email already exists");
         }
-
-        return new UserResponse(saved);
     }
 
     public UserResponse updateUser(Long id, UserUpdateRequest request) {
@@ -74,15 +72,13 @@ public class UserService {
         user.setEmail(request.email());
         user.setPhoneNumber(request.phoneNumber());
 
-        User saved;
-
         try {
-            saved = userRepository.save(user);
+            User saved = userRepository.save(user);
+
+            return new UserResponse(saved);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateResourceException(
                     "An account with this username or email already exists");
         }
-
-        return new UserResponse(saved);
     }
 }
