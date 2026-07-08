@@ -95,4 +95,13 @@ public class UserService {
                     "An account with this username or email already exists");
         }
     }
+
+    // TODO: Restric deletion to the account owner when Spring Security is added or an admin
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+
+        userRepository.deleteById(id);
+    }
 }

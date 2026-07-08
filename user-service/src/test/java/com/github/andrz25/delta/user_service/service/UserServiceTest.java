@@ -248,4 +248,30 @@ class UserServiceTest {
 
         verify(userRepository, never()).save(any());
     }
+
+    @Test
+    void givenValidId_whenDeleteUser_thenUserIsDeleted() {
+        // Arrange
+        Long id = 1L;
+
+        when(userRepository.existsById(id)).thenReturn(true);
+
+        // Act
+        userService.deleteUser(id);
+
+        verify(userRepository).deleteById(id);
+    }
+
+    @Test
+    void givenNonExistentUser_whenDeleteUser_thenThrowResourceNotFoundException() {
+        // Arrange
+        Long id = 1L;
+
+        when(userRepository.existsById(id)).thenReturn(false);
+
+        // Act
+        assertThrows(ResourceNotFoundException.class, () -> userService.deleteUser(id));
+
+        verify(userRepository, never()).deleteById(id);
+    }
 }
