@@ -46,28 +46,29 @@ public class User {
 
     protected User() {}
 
-    private User(
-            String fullName,
-            String username,
-            String email,
-            LocalDate dateOfBirth,
-            String phoneNumber,
-            Role role) {
-        this.fullName = fullName;
-        this.username = username;
-        this.email = email;
-        this.dateOfBirth = dateOfBirth;
-        this.phoneNumber = phoneNumber;
-        this.role = role;
+    private User(Builder builder) {
+        this.id = builder.id;
+        this.fullName = builder.fullName;
+        this.username = builder.username;
+        this.email = builder.email;
+        this.dateOfBirth = builder.dateOfBirth;
+        this.phoneNumber = builder.phoneNumber;
+        this.role = builder.role;
     }
 
     public static class Builder {
+        private Long id;
         private String fullName;
         private String username;
         private String email;
         private LocalDate dateOfBirth;
         private String phoneNumber;
         private Role role;
+
+        public Builder setId(Long id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder setFullName(String fullName) {
             this.fullName = fullName;
@@ -100,7 +101,7 @@ public class User {
         }
 
         public User build() {
-            return new User(fullName, username, email, dateOfBirth, phoneNumber, role);
+            return new User(this);
         }
     }
 

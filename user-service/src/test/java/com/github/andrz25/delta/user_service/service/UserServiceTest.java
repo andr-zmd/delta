@@ -115,6 +115,7 @@ class UserServiceTest {
 
         User existingUser =
                 new User.Builder()
+                        .setId(id)
                         .setFullName("John Doe")
                         .setUsername("jnde05")
                         .setEmail("johndoe@xyz.com")
@@ -133,6 +134,7 @@ class UserServiceTest {
         UserResponse response = userService.updateUser(id, request);
 
         // Assert
+        assertEquals(id, response.id());
         assertEquals(request.fullName(), response.fullName());
         assertEquals(request.username(), response.username());
         assertEquals(request.email(), response.email());
@@ -153,6 +155,7 @@ class UserServiceTest {
 
         User existingUser =
                 new User.Builder()
+                        .setId(id)
                         .setFullName("John Doe")
                         .setUsername("jnde05")
                         .setEmail("johndoe@xyz.com")
@@ -179,6 +182,7 @@ class UserServiceTest {
 
         User existingUser =
                 new User.Builder()
+                        .setId(id)
                         .setFullName("John Doe")
                         .setUsername("jnde05")
                         .setEmail("johndoe@xyz.com")
