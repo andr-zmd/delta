@@ -50,6 +50,20 @@ public class UserService {
         }
     }
 
+    public UserResponse getUserById(Long id) {
+        User user =
+                userRepository
+                        .findById(id)
+                        .orElseThrow(
+                                () ->
+                                        new ResourceNotFoundException(
+                                                "User not found with id: " + id));
+
+        UserResponse response = new UserResponse(user);
+
+        return response;
+    }
+
     public UserResponse updateUser(Long id, UserUpdateRequest request) {
         User user =
                 userRepository

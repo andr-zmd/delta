@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.github.andrz25.delta.user_service.exception.DuplicateResourceException;
+import com.github.andrz25.delta.user_service.exception.ResourceNotFoundException;
 import com.github.andrz25.delta.user_service.model.Role;
 import com.github.andrz25.delta.user_service.model.User;
 import com.github.andrz25.delta.user_service.repository.UserRepository;
@@ -106,6 +107,53 @@ class UserServiceTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
+    // getUserById()
+    @Test
+    void givenValidId_whenGetUserById_thenReturnUserResponse() {
+        // Arrange
+        Long id = 1L;
+
+        User user =
+                new User.Builder()
+                        .setId(id)
+                        .setFullName("John Doe")
+                        .setUsername("jnde05")
+                        .setEmail("johndoe@xyz.com")
+                        .setDateOfBirth(LocalDate.of(2005, 7, 1))
+                        .setPhoneNumber("12345678910")
+                        .setRole(Role.USER)
+                        .build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+
+        // Act
+        UserResponse response = userService.getUserById(id);
+
+        // Assert
+        assertEquals(id, response.id());
+        assertEquals(user.getFullName(), response.fullName());
+        assertEquals(user.getUsername(), response.username());
+        assertEquals(user.getEmail(), response.email());
+        assertEquals(user.getDateOfBirth(), response.dateOfBirth());
+        assertEquals(user.getPhoneNumber(), response.phoneNumber());
+        assertEquals(user.getRole(), response.role());
+
+        verify(userRepository).findById(id);
+    }
+
+    @Test
+    void givenNonExistentId_whenGetUserById_thenThrowResourceNotFoundException() {
+        // Arrange
+        Long id = 1L;
+
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(id));
+        verify(userRepository).findById(id);
+    }
+
+    // updateUser()
     @Test
     void givenValidUserUpdateRequest_whenUpdateUser_thenReturnUserResponse() {
         // Arrange
