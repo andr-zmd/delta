@@ -1,0 +1,25 @@
+info:
+  name: register-user
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8080/api/users
+  body:
+    type: json
+    data: |-
+      {
+        "fullName": "John Doe",
+        "username": "jnde05",
+        "email": "johndoe05@example.com",
+        "dateOfBirth": "2007-07-10",
+        "phoneNumber": "6478092572"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
