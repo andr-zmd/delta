@@ -12,6 +12,7 @@ import com.github.andrz25.delta.user_service.response.UserResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+// TODO: Use Redis for caching
 @Service
 public class UserService {
 
@@ -96,7 +97,7 @@ public class UserService {
         }
     }
 
-    // TODO: Restric deletion to the account owner when Spring Security is added or an admin
+    // TODO: Restrict deletion to the account owner when Spring Security is added or an admin
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException("User not found with id: " + id);
