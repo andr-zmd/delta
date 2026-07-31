@@ -1,7 +1,7 @@
 package com.github.andrz25.delta.user_service.service;
 
 import com.github.andrz25.delta.user_service.exception.DuplicateResourceException;
-import com.github.andrz25.delta.user_service.exception.ResourceNotFoundException;
+import com.github.andrz25.delta.user_service.exception.UserNotFoundException;
 import com.github.andrz25.delta.user_service.model.Role;
 import com.github.andrz25.delta.user_service.model.User;
 import com.github.andrz25.delta.user_service.repository.UserRepository;
@@ -55,9 +55,7 @@ public class UserService {
                 userRepository
                         .findById(id)
                         .orElseThrow(
-                                () ->
-                                        new ResourceNotFoundException(
-                                                "User not found with id: " + id));
+                                () -> new UserNotFoundException("User not found with id: " + id));
 
         UserResponse response = new UserResponse(user);
 
@@ -69,9 +67,7 @@ public class UserService {
                 userRepository
                         .findById(id)
                         .orElseThrow(
-                                () ->
-                                        new ResourceNotFoundException(
-                                                "User not found with id: " + id));
+                                () -> new UserNotFoundException("User not found with id: " + id));
 
         if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
             throw new DuplicateResourceException("Email", request.email());
@@ -98,7 +94,7 @@ public class UserService {
     // TODO: Restrict deletion to the account owner when Spring Security is added or an admin
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("User not found with id: " + id);
+            throw new UserNotFoundException("User not found with id: " + id);
         }
 
         userRepository.deleteById(id);

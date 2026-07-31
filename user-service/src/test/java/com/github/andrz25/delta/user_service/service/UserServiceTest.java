@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.github.andrz25.delta.user_service.exception.DuplicateResourceException;
-import com.github.andrz25.delta.user_service.exception.ResourceNotFoundException;
+import com.github.andrz25.delta.user_service.exception.UserNotFoundException;
 import com.github.andrz25.delta.user_service.model.Role;
 import com.github.andrz25.delta.user_service.model.User;
 import com.github.andrz25.delta.user_service.repository.UserRepository;
@@ -149,7 +149,7 @@ class UserServiceTest {
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(id));
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(id));
         verify(userRepository).findById(id);
     }
 
@@ -270,7 +270,7 @@ class UserServiceTest {
         when(userRepository.existsById(id)).thenReturn(false);
 
         // Act
-        assertThrows(ResourceNotFoundException.class, () -> userService.deleteUser(id));
+        assertThrows(UserNotFoundException.class, () -> userService.deleteUser(id));
 
         verify(userRepository, never()).deleteById(id);
     }
