@@ -24,11 +24,11 @@ public class UserService {
 
     public UserResponse registerUser(UserRegistrationRequest request) {
         if (userRepository.existsByUsername(request.username())) {
-            throw new DuplicateResourceException("An account with this username already exists");
+            throw new DuplicateResourceException("Username", request.username());
         }
 
         if (userRepository.existsByEmail(request.email())) {
-            throw new DuplicateResourceException("An account with this email already exists");
+            throw new DuplicateResourceException("Email", request.email());
         }
 
         User user =
@@ -46,8 +46,7 @@ public class UserService {
 
             return new UserResponse(saved);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException(
-                    "An account with this username or email already exists");
+            throw new DuplicateResourceException("Username", request.username());
         }
     }
 
@@ -75,11 +74,11 @@ public class UserService {
                                                 "User not found with id: " + id));
 
         if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
-            throw new DuplicateResourceException("An account with this email already exists");
+            throw new DuplicateResourceException("Email", request.email());
         }
 
         if (userRepository.existsByUsernameAndIdNot(request.username(), id)) {
-            throw new DuplicateResourceException("An account with this username already exists");
+            throw new DuplicateResourceException("Username", request.username());
         }
 
         user.setFullName(request.fullName());
@@ -92,8 +91,7 @@ public class UserService {
 
             return new UserResponse(saved);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException(
-                    "An account with this username or email already exists");
+            throw new DuplicateResourceException("Username", request.username());
         }
     }
 
