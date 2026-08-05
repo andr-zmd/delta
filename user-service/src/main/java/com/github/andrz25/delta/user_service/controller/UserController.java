@@ -37,11 +37,10 @@ public class UserController {
 
         UserResponse response = userService.registerUser(request);
 
-        URI location =
-                ServletUriComponentsBuilder.fromCurrentRequest()
-                        .path("/{id}")
-                        .buildAndExpand(response.id())
-                        .toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
 
         return ResponseEntity.created(location).body(response);
     }

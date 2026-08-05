@@ -18,11 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq_gen")
-    @SequenceGenerator(
-            name = "user_seq_gen",
-            sequenceName = "user_seq",
-            initialValue = 1,
-            allocationSize = 50)
+    @SequenceGenerator(name = "user_seq_gen", sequenceName = "user_seq", initialValue = 1, allocationSize = 50)
     private Long id;
 
     @Column(name = "full_name", nullable = false, length = 255)
@@ -44,7 +40,8 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    protected User() {}
+    protected User() {
+    }
 
     private User(Builder builder) {
         this.id = builder.id;

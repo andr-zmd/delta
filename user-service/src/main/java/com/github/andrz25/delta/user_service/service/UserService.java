@@ -51,11 +51,10 @@ public class UserService {
     }
 
     public UserResponse getUserById(Long id) {
-        User user =
-                userRepository
-                        .findById(id)
-                        .orElseThrow(
-                                () -> new UserNotFoundException("User not found with id: " + id));
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(
+                        () -> new UserNotFoundException("User not found with id: " + id));
 
         UserResponse response = new UserResponse(user);
 
@@ -63,11 +62,10 @@ public class UserService {
     }
 
     public UserResponse updateUser(Long id, UserUpdateRequest request) {
-        User user =
-                userRepository
-                        .findById(id)
-                        .orElseThrow(
-                                () -> new UserNotFoundException("User not found with id: " + id));
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(
+                        () -> new UserNotFoundException("User not found with id: " + id));
 
         if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
             throw new DuplicateResourceException("Email", request.email());
@@ -91,7 +89,8 @@ public class UserService {
         }
     }
 
-    // TODO: Restrict deletion to the account owner when Spring Security is added or an admin
+    // TODO: Restrict deletion to the account owner when Spring Security is added or
+    // an admin
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             throw new UserNotFoundException("User not found with id: " + id);
