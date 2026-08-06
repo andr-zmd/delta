@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -28,24 +29,30 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    @Mock private UserRepository userRepository;
+    @Mock
+    private UserRepository userRepository;
 
-    @InjectMocks private UserService userService;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @InjectMocks
+    private UserService userService;
 
     // registerUser()
     @Test
     void givenValidUserRegistrationRequest_whenRegisterUser_thenReturnUserResponse() {
         // Arrange
-        UserRegistrationRequest request =
-                new UserRegistrationRequest(
-                        "John Doe",
-                        "jnde25",
-                        "johndoe@xyz.com",
-                        LocalDate.of(2000, 7, 1),
-                        "12345678910");
+        UserRegistrationRequest request = new UserRegistrationRequest(
+                "John Doe",
+                "jnde25",
+                "johndoe@xyz.com",
+                "12345678910",
+                LocalDate.of(2000, 7, 1),
+                "12345678910");
 
         when(userRepository.existsByUsername(request.username())).thenReturn(false);
         when(userRepository.existsByEmail(request.email())).thenReturn(false);
+        when(passwordEncoder.encode(request.password())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -64,13 +71,13 @@ class UserServiceTest {
     @Test
     void givenDuplicateEmail_whenRegisterUser_thenThrowDuplicateResourceException() {
         // Arrange
-        UserRegistrationRequest request =
-                new UserRegistrationRequest(
-                        "Jane Doe",
-                        "jnde05",
-                        "johndoe@xyz.com",
-                        LocalDate.of(2005, 7, 1),
-                        "12345678910");
+        UserRegistrationRequest request = new UserRegistrationRequest(
+                "Jane Doe",
+                "jnde05",
+                "johndoe@xyz.com",
+                "12345678910",
+                LocalDate.of(2005, 7, 1),
+                "12345678910");
 
         when(userRepository.existsByEmail(request.email())).thenReturn(true);
 
@@ -87,13 +94,13 @@ class UserServiceTest {
     @Test
     void givenDuplicateUsername_whenRegisterUser_thenThrowDuplicateResourceException() {
         // Arrange
-        UserRegistrationRequest request =
-                new UserRegistrationRequest(
-                        "Jane Doe",
-                        "jnde05",
-                        "janedoe@xyz.com",
-                        LocalDate.of(2005, 7, 1),
-                        "12345678910");
+        UserRegistrationRequest request = new UserRegistrationRequest(
+                "Jane Doe",
+                "jnde05",
+                "janedoe@xyz.com",
+                "12345678910",
+                LocalDate.of(2005, 7, 1),
+                "12345678910");
 
         when(userRepository.existsByUsername(request.username())).thenReturn(true);
 
@@ -113,16 +120,15 @@ class UserServiceTest {
         // Arrange
         Long id = 1L;
 
-        User user =
-                new User.Builder()
-                        .setId(id)
-                        .setFullName("John Doe")
-                        .setUsername("jnde05")
-                        .setEmail("johndoe@xyz.com")
-                        .setDateOfBirth(LocalDate.of(2005, 7, 1))
-                        .setPhoneNumber("12345678910")
-                        .setRole(Role.USER)
-                        .build();
+        User user = new User.Builder()
+                .setId(id)
+                .setFullName("John Doe")
+                .setUsername("jnde05")
+                .setEmail("johndoe@xyz.com")
+                .setDateOfBirth(LocalDate.of(2005, 7, 1))
+                .setPhoneNumber("12345678910")
+                .setRole(Role.USER)
+                .build();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
@@ -158,19 +164,17 @@ class UserServiceTest {
     void givenValidUserUpdateRequest_whenUpdateUser_thenReturnUserResponse() {
         // Arrange
         Long id = 1L;
-        UserUpdateRequest request =
-                new UserUpdateRequest("Jake Doe", "jkde05", "jakedoe@xyz.com", "11987654321");
+        UserUpdateRequest request = new UserUpdateRequest("Jake Doe", "jkde05", "jakedoe@xyz.com", "11987654321");
 
-        User existingUser =
-                new User.Builder()
-                        .setId(id)
-                        .setFullName("John Doe")
-                        .setUsername("jnde05")
-                        .setEmail("johndoe@xyz.com")
-                        .setDateOfBirth(LocalDate.of(2005, 7, 1))
-                        .setPhoneNumber("12345678910")
-                        .setRole(Role.USER)
-                        .build();
+        User existingUser = new User.Builder()
+                .setId(id)
+                .setFullName("John Doe")
+                .setUsername("jnde05")
+                .setEmail("johndoe@xyz.com")
+                .setDateOfBirth(LocalDate.of(2005, 7, 1))
+                .setPhoneNumber("12345678910")
+                .setRole(Role.USER)
+                .build();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
         when(userRepository.existsByEmailAndIdNot(request.email(), id)).thenReturn(false);
@@ -198,19 +202,17 @@ class UserServiceTest {
     void givenDuplicateEmail_whenUpdateUser_thenThrowDuplicateResourceException() {
         // Arrange
         Long id = 1L;
-        UserUpdateRequest request =
-                new UserUpdateRequest("John Doe", "jnde05", "johndoe05@xyz.com", "12345678910");
+        UserUpdateRequest request = new UserUpdateRequest("John Doe", "jnde05", "johndoe05@xyz.com", "12345678910");
 
-        User existingUser =
-                new User.Builder()
-                        .setId(id)
-                        .setFullName("John Doe")
-                        .setUsername("jnde05")
-                        .setEmail("johndoe@xyz.com")
-                        .setDateOfBirth(LocalDate.of(2005, 7, 1))
-                        .setPhoneNumber("12345678910")
-                        .setRole(Role.USER)
-                        .build();
+        User existingUser = new User.Builder()
+                .setId(id)
+                .setFullName("John Doe")
+                .setUsername("jnde05")
+                .setEmail("johndoe@xyz.com")
+                .setDateOfBirth(LocalDate.of(2005, 7, 1))
+                .setPhoneNumber("12345678910")
+                .setRole(Role.USER)
+                .build();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
         when(userRepository.existsByEmailAndIdNot(request.email(), id)).thenReturn(true);
@@ -225,19 +227,17 @@ class UserServiceTest {
     void givenDuplicateUsername_whenUpdateUser_thenThrowDuplicateResourceException() {
         // Arrange
         Long id = 1L;
-        UserUpdateRequest request =
-                new UserUpdateRequest("John Doe", "jnde2005", "johndoe@xyz.com", "12345678910");
+        UserUpdateRequest request = new UserUpdateRequest("John Doe", "jnde2005", "johndoe@xyz.com", "12345678910");
 
-        User existingUser =
-                new User.Builder()
-                        .setId(id)
-                        .setFullName("John Doe")
-                        .setUsername("jnde05")
-                        .setEmail("johndoe@xyz.com")
-                        .setDateOfBirth(LocalDate.of(2005, 7, 1))
-                        .setPhoneNumber("12345678910")
-                        .setRole(Role.USER)
-                        .build();
+        User existingUser = new User.Builder()
+                .setId(id)
+                .setFullName("John Doe")
+                .setUsername("jnde05")
+                .setEmail("johndoe@xyz.com")
+                .setDateOfBirth(LocalDate.of(2005, 7, 1))
+                .setPhoneNumber("12345678910")
+                .setRole(Role.USER)
+                .build();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
         when(userRepository.existsByEmailAndIdNot(request.email(), id)).thenReturn(false);

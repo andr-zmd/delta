@@ -30,6 +30,9 @@ public class User {
     @Column(name = "email_address", nullable = false, unique = true, length = 255)
     private String email;
 
+    @Column(name = "password", nullable = false, length = 128)
+    private String password;
+
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
@@ -48,6 +51,7 @@ public class User {
         this.fullName = builder.fullName;
         this.username = builder.username;
         this.email = builder.email;
+        this.password = builder.password;
         this.dateOfBirth = builder.dateOfBirth;
         this.phoneNumber = builder.phoneNumber;
         this.role = builder.role;
@@ -58,6 +62,7 @@ public class User {
         private String fullName;
         private String username;
         private String email;
+        private String password;
         private LocalDate dateOfBirth;
         private String phoneNumber;
         private Role role;
@@ -79,6 +84,11 @@ public class User {
 
         public Builder setEmail(String email) {
             this.email = email;
+            return this;
+        }
+
+        public Builder setPassword(String password) {
+            this.password = password;
             return this;
         }
 
@@ -118,6 +128,10 @@ public class User {
         return email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
@@ -144,6 +158,10 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.email = password;
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {

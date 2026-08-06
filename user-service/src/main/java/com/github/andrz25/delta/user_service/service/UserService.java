@@ -10,6 +10,7 @@ import com.github.andrz25.delta.user_service.request.UserUpdateRequest;
 import com.github.andrz25.delta.user_service.response.UserResponse;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 // TODO: Use Redis for caching
@@ -18,8 +19,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserResponse registerUser(UserRegistrationRequest request) {
@@ -31,15 +35,15 @@ public class UserService {
             throw new DuplicateResourceException("Email", request.email());
         }
 
-        User user =
-                new User.Builder()
-                        .setFullName(request.fullName())
-                        .setUsername(request.username())
-                        .setEmail(request.email())
-                        .setDateOfBirth(request.dateOfBirth())
-                        .setPhoneNumber(request.phoneNumber())
-                        .setRole(Role.USER)
-                        .build();
+        User user = new User.Builder()
+                .setFullName(request.fullName())
+                .setUsername(request.username())
+                .setEmail(request.email())
+                .setPassword(passwordEncoder.encode(request.password()))
+                .setDateOfBirth(request.dateOfBirth())
+                .setPhoneNumber(request.phoneNumber())
+                .setRole(Role.USER)
+                .build();
 
         try {
             User saved = userRepository.save(user);
