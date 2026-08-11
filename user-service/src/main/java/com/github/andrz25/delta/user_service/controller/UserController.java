@@ -20,7 +20,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
-// TODO: Error handling for thrown exceptions
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
