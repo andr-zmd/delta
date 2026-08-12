@@ -12,6 +12,7 @@ import com.github.andrz25.delta.user_service.response.UserResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 // TODO: Use Redis for caching
 @Service
@@ -42,7 +43,7 @@ public class UserService {
                 .setPassword(passwordEncoder.encode(request.password()))
                 .setDateOfBirth(request.dateOfBirth())
                 .setPhoneNumber(request.phoneNumber())
-                .setRole(Role.USER)
+                .addRole(Role.USER)
                 .build();
 
         try {

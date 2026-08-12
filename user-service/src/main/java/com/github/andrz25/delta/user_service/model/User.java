@@ -1,16 +1,25 @@
 package com.github.andrz25.delta.user_service.model;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -39,9 +48,11 @@ public class User {
     @Column(name = "phone_number", nullable = false, unique = true, length = 20)
     private String phoneNumber;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private Role role;
+    private Set<Role> roles;
 
     protected User() {
     }
@@ -54,7 +65,7 @@ public class User {
         this.password = builder.password;
         this.dateOfBirth = builder.dateOfBirth;
         this.phoneNumber = builder.phoneNumber;
-        this.role = builder.role;
+        this.roles = new HashSet<>(builder.roles);
     }
 
     public static class Builder {
@@ -65,7 +76,7 @@ public class User {
         private String password;
         private LocalDate dateOfBirth;
         private String phoneNumber;
-        private Role role;
+        private Set<Role> roles = new HashSet<>();
 
         public Builder setId(Long id) {
             this.id = id;
@@ -102,8 +113,8 @@ public class User {
             return this;
         }
 
-        public Builder setRole(Role role) {
-            this.role = role;
+        public Builder addRole(Role role) {
+            this.roles.add(role);
             return this;
         }
 
@@ -140,8 +151,8 @@ public class User {
         return phoneNumber;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return new HashSet<>(this.roles);
     }
 
     public void setId(Long id) {
@@ -172,8 +183,12 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        this.roles.remove(role);
     }
 
     @Override
@@ -191,7 +206,7 @@ public class User {
                 + ", phoneNumber="
                 + phoneNumber
                 + ", role="
-                + role
+                + roles
                 + "]";
     }
 }

@@ -4,6 +4,7 @@ import com.github.andrz25.delta.user_service.model.Role;
 import com.github.andrz25.delta.user_service.model.User;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public record UserResponse(
         Long id,
@@ -12,7 +13,7 @@ public record UserResponse(
         String email,
         LocalDate dateOfBirth,
         String phoneNumber,
-        Role role) {
+        Set<Role> roles) {
 
     public UserResponse(User user) {
         this(
@@ -22,6 +23,6 @@ public record UserResponse(
                 user.getEmail(),
                 user.getDateOfBirth(),
                 user.getPhoneNumber(),
-                user.getRole());
+                user.getRoles());
     }
 }

@@ -24,7 +24,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -65,7 +67,7 @@ class UserServiceTest {
         assertEquals(request.email(), response.email());
         assertEquals(request.dateOfBirth(), response.dateOfBirth());
         assertEquals(request.phoneNumber(), response.phoneNumber());
-        assertEquals(Role.USER, response.role());
+        assertEquals(Set.of(Role.USER), response.roles());
     }
 
     @Test
@@ -127,7 +129,7 @@ class UserServiceTest {
                 .setEmail("johndoe@xyz.com")
                 .setDateOfBirth(LocalDate.of(2005, 7, 1))
                 .setPhoneNumber("12345678910")
-                .setRole(Role.USER)
+                .addRole(Role.USER)
                 .build();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
@@ -142,7 +144,7 @@ class UserServiceTest {
         assertEquals(user.getEmail(), response.email());
         assertEquals(user.getDateOfBirth(), response.dateOfBirth());
         assertEquals(user.getPhoneNumber(), response.phoneNumber());
-        assertEquals(user.getRole(), response.role());
+        assertEquals(user.getRoles(), response.roles());
 
         verify(userRepository).findById(id);
     }
@@ -173,7 +175,7 @@ class UserServiceTest {
                 .setEmail("johndoe@xyz.com")
                 .setDateOfBirth(LocalDate.of(2005, 7, 1))
                 .setPhoneNumber("12345678910")
-                .setRole(Role.USER)
+                .addRole(Role.USER)
                 .build();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
@@ -192,7 +194,7 @@ class UserServiceTest {
         assertEquals(request.email(), response.email());
         assertEquals(existingUser.getDateOfBirth(), response.dateOfBirth());
         assertEquals(request.phoneNumber(), response.phoneNumber());
-        assertEquals(existingUser.getRole(), response.role());
+        assertEquals(existingUser.getRoles(), response.roles());
 
         verify(userRepository).existsByEmailAndIdNot(request.email(), id);
         verify(userRepository).existsByUsernameAndIdNot(request.username(), id);
@@ -211,7 +213,7 @@ class UserServiceTest {
                 .setEmail("johndoe@xyz.com")
                 .setDateOfBirth(LocalDate.of(2005, 7, 1))
                 .setPhoneNumber("12345678910")
-                .setRole(Role.USER)
+                .addRole(Role.USER)
                 .build();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
@@ -236,7 +238,7 @@ class UserServiceTest {
                 .setEmail("johndoe@xyz.com")
                 .setDateOfBirth(LocalDate.of(2005, 7, 1))
                 .setPhoneNumber("12345678910")
-                .setRole(Role.USER)
+                .addRole(Role.USER)
                 .build();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
