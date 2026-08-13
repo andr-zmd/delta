@@ -1,8 +1,6 @@
 package com.github.andrz25.delta.user_service.security;
 
 import java.util.Date;
-import java.util.function.Function;
-
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;

@@ -12,7 +12,6 @@ import com.github.andrz25.delta.user_service.response.UserResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 // TODO: Use Redis for caching
 @Service
