@@ -3,11 +3,13 @@ package com.github.andrz25.delta.user_service.controller;
 import com.github.andrz25.delta.user_service.request.UserRegistrationRequest;
 import com.github.andrz25.delta.user_service.request.UserUpdateRequest;
 import com.github.andrz25.delta.user_service.response.UserResponse;
+import com.github.andrz25.delta.user_service.security.UserDetailsImpl;
 import com.github.andrz25.delta.user_service.service.UserService;
 
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,9 +46,11 @@ public class UserController {
         return ResponseEntity.created(location).body(response);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<UserResponse> updateUser(
-            @PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
+            @AuthenticationPrincipal UserDetailsImpl principal,
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest request) {
 
         UserResponse response = userService.updateUser(id, request);
 
@@ -54,16 +58,18 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getUser(
+            @AuthenticationPrincipal UserDetailsImpl principal,
+            @PathVariable Long id) {
+
         UserResponse response = userService.getUserById(id);
 
         return ResponseEntity.ok().body(response);
     }
 
-    // TODO: Confirm the user owns the account
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserDetailsImpl principal) {
+        userService.deleteUser(principal.getId());
 
         return ResponseEntity.noContent().build();
     }
