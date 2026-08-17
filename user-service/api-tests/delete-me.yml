@@ -1,11 +1,11 @@
 info:
-  name: delete-user
+  name: delete-me
   type: http
-  seq: 4
+  seq: 1
 
 http:
   method: DELETE
-  url: ""
+  url: http://localhost:8080/api/users/me
   auth: inherit
 
 settings:

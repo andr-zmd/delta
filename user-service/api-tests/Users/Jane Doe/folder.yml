@@ -1,0 +1,7 @@
+info:
+  name: Jane Doe
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit

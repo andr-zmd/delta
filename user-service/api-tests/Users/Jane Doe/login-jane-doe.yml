@@ -1,0 +1,28 @@
+info:
+  name: login-jane-doe
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8080/api/auth/login
+  body:
+    type: json
+    data: |-
+      {
+        "username": "jede06",
+        "password": "jdoe063210"
+      }
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const token = res.getBody().token;
+        bru.setVar("token", token);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

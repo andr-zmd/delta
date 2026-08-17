@@ -1,11 +1,11 @@
 info:
-  name: update-user
+  name: update-me
   type: http
-  seq: 3
+  seq: 4
 
 http:
   method: PUT
-  url: ""
+  url: http://localhost:8080/api/users/me
   auth: inherit
 
 settings:

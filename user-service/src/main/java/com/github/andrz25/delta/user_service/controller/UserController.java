@@ -1,18 +1,11 @@
 package com.github.andrz25.delta.user_service.controller;
 
-import com.github.andrz25.delta.user_service.request.UserRegistrationRequest;
-import com.github.andrz25.delta.user_service.request.UserUpdateRequest;
-import com.github.andrz25.delta.user_service.response.UserResponse;
-import com.github.andrz25.delta.user_service.security.UserDetailsImpl;
-import com.github.andrz25.delta.user_service.service.UserService;
-
-import jakarta.validation.Valid;
+import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
+import com.github.andrz25.delta.user_service.request.UserRegistrationRequest;
+import com.github.andrz25.delta.user_service.request.UserUpdateRequest;
+import com.github.andrz25.delta.user_service.response.UserResponse;
+import com.github.andrz25.delta.user_service.security.UserDetailsImpl;
+import com.github.andrz25.delta.user_service.service.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
@@ -36,6 +35,7 @@ public class UserController {
     public ResponseEntity<UserResponse> registerUser(
             @Valid @RequestBody UserRegistrationRequest request) {
 
+        System.out.println("test");
         UserResponse response = userService.registerUser(request);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -46,29 +46,27 @@ public class UserController {
         return ResponseEntity.created(location).body(response);
     }
 
-    @PutMapping
-    public ResponseEntity<UserResponse> updateUser(
-            @AuthenticationPrincipal UserDetailsImpl principal,
-            @PathVariable Long id,
-            @Valid @RequestBody UserUpdateRequest request) {
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getCurrentUser(
+            @AuthenticationPrincipal UserDetailsImpl principal) {
 
-        UserResponse response = userService.updateUser(id, request);
+        UserResponse response = userService.getUserById(principal.getId());
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUser(
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateCurrentUser(
             @AuthenticationPrincipal UserDetailsImpl principal,
-            @PathVariable Long id) {
+            @Valid @RequestBody UserUpdateRequest request) {
 
-        UserResponse response = userService.getUserById(id);
+        UserResponse response = userService.updateUser(principal.getId(), request);
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserDetailsImpl principal) {
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteCurrentUser(@AuthenticationPrincipal UserDetailsImpl principal) {
         userService.deleteUser(principal.getId());
 
         return ResponseEntity.noContent().build();

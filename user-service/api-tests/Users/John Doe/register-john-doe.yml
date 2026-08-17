@@ -1,5 +1,5 @@
 info:
-  name: register-user
+  name: register-john-doe
   type: http
   seq: 1
 
@@ -13,10 +13,10 @@ http:
         "fullName": "John Doe",
         "username": "jnde05",
         "email": "johndoe05@example.com",
-        "dateOfBirth": "2007-07-10",
-        "phoneNumber": "6478092572"
+        "password": "jdoe050710",
+        "dateOfBirth": "2005-07-10",
+        "phoneNumber": "9428316677"
       }
-  auth: inherit
 
 settings:
   encodeUrl: true

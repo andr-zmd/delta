@@ -1,0 +1,28 @@
+info:
+  name: login-john-doe
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8080/api/auth/login
+  body:
+    type: json
+    data: |-
+      {
+        "username": "jnde05",
+        "password": "jdoe050710"
+      }
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const token = res.getBody().token;
+        bru.setVar("token", token);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
