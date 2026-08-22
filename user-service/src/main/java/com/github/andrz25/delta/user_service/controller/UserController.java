@@ -35,7 +35,6 @@ public class UserController {
     public ResponseEntity<UserResponse> registerUser(
             @Valid @RequestBody UserRegistrationRequest request) {
 
-        System.out.println("test");
         UserResponse response = userService.registerUser(request);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
