@@ -9,11 +9,13 @@ import com.github.andrz25.delta.user_service.request.UserRegistrationRequest;
 import com.github.andrz25.delta.user_service.request.UserUpdateRequest;
 import com.github.andrz25.delta.user_service.response.UserResponse;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-// TODO: Use Redis for caching
 @Service
 public class UserService {
 
@@ -54,6 +56,7 @@ public class UserService {
         }
     }
 
+    @Cacheable(value = "users")
     public UserResponse getUserById(Long id) {
         User user = userRepository
                 .findById(id)
@@ -64,7 +67,8 @@ public class UserService {
 
         return response;
     }
-
+    
+    @CachePut(value = "users", key = "#id")
     public UserResponse updateUser(Long id, UserUpdateRequest request) {
         User user = userRepository
                 .findById(id)
@@ -93,8 +97,7 @@ public class UserService {
         }
     }
 
-    // TODO: Restrict deletion to the account owner when Spring Security is added or
-    // an admin
+    @CacheEvict(value = "users", key = "#id")
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             throw new UserNotFoundException("User not found with id: " + id);
