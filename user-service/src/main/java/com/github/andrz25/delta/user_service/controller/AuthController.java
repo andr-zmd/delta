@@ -13,6 +13,8 @@ import com.github.andrz25.delta.user_service.request.LoginRequest;
 import com.github.andrz25.delta.user_service.response.LoginResponse;
 import com.github.andrz25.delta.user_service.security.JwtService;
 
+import jakarta.validation.Valid;
+
 @Controller
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -26,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         Authentication authToken = new UsernamePasswordAuthenticationToken(request.username(), request.password());
 
         Authentication authResult = authenticationManager.authenticate(authToken);
