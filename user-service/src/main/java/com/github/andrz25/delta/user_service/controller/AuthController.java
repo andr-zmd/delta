@@ -4,10 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.github.andrz25.delta.user_service.request.LoginRequest;
 import com.github.andrz25.delta.user_service.response.LoginResponse;
@@ -15,7 +15,7 @@ import com.github.andrz25.delta.user_service.security.JwtService;
 
 import jakarta.validation.Valid;
 
-@Controller
+@RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
