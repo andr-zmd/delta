@@ -2,14 +2,18 @@ package com.github.andrz25.delta.user_service.controller;
 
 import com.github.andrz25.delta.user_service.exception.*;
 import com.github.andrz25.delta.user_service.response.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import java.net.URI;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
@@ -17,10 +21,17 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserExist(UserNotFoundException e) {
-        ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage(), Instant.now());
+    public ResponseEntity<ProblemDetail> handleUserDoesNotExist(UserNotFoundException e, HttpServletRequest request) {
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,
+                "User " + e.getUserId() + " not found");
+
+        pd.setTitle("User Not Found");
+        pd.setInstance(URI.create(request.getRequestURI()));
+        pd.setProperty("timestamp", Instant.now().toString());
+        pd.setProperty("userId", e.getUserId());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pd);
     }
 
     @ExceptionHandler(DuplicateResourceException.class)

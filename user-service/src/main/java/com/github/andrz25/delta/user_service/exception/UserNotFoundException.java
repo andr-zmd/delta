@@ -1,7 +1,15 @@
 package com.github.andrz25.delta.user_service.exception;
 
 public class UserNotFoundException extends RuntimeException {
-    public UserNotFoundException(String message) {
-        super(message);
+
+    private final Long userId;
+
+    public UserNotFoundException(Long userId) {
+        super("User " + userId + " not found");
+        this.userId = userId;
+    }
+    
+    public Long getUserId() {
+        return userId;
     }
 }

@@ -61,7 +61,7 @@ public class UserService {
         User user = userRepository
                 .findById(id)
                 .orElseThrow(
-                        () -> new UserNotFoundException("User not found with id: " + id));
+                        () -> new UserNotFoundException(id));
 
         UserResponse response = new UserResponse(user);
 
@@ -73,7 +73,7 @@ public class UserService {
         User user = userRepository
                 .findById(id)
                 .orElseThrow(
-                        () -> new UserNotFoundException("User not found with id: " + id));
+                        () -> new UserNotFoundException(id));
 
         if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
             throw new DuplicateResourceException("Email", request.email());
@@ -100,7 +100,7 @@ public class UserService {
     @CacheEvict(value = "users", key = "#id")
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException("User not found with id: " + id);
+            throw new UserNotFoundException(id);
         }
 
         userRepository.deleteById(id);
