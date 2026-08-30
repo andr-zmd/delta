@@ -1,8 +1,6 @@
 package com.github.andrz25.delta.user_service.controller;
 
 import com.github.andrz25.delta.user_service.exception.*;
-import com.github.andrz25.delta.user_service.response.ErrorResponse;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.security.core.AuthenticationException;
@@ -13,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.HandlerMethodValidationException;
-
 import java.net.URI;
 import java.time.Instant;
 import java.util.Map;
@@ -79,10 +75,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ErrorResponse> handleAuthenticationFailure(AuthenticationException e) {
-        ErrorResponse error = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), e.getMessage(), Instant.now());
+    public ResponseEntity<ProblemDetail> handleAuthenticationFailure(AuthenticationException e, HttpServletRequest request) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        pd.setTitle("Auhentication Failure");
+        pd.setInstance(URI.create(request.getRequestURI()));
+        pd.setProperty("timestamp", Instant.now().toString());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(pd);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -103,8 +103,5 @@ public class GlobalExceptionHandler {
         pd.setProperty("errors", errors);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
-    }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }
