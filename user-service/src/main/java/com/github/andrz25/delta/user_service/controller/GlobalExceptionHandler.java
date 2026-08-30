@@ -21,7 +21,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleUserDoesNotExist(UserNotFoundException e, HttpServletRequest request) {
-
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,
                 "User " + e.getUserId() + " not found");
 
@@ -75,7 +74,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ProblemDetail> handleAuthenticationFailure(AuthenticationException e, HttpServletRequest request) {
+    public ResponseEntity<ProblemDetail> handleAuthenticationFailure(AuthenticationException e,
+            HttpServletRequest request) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
 
         pd.setTitle("Auhentication Failure");
@@ -88,7 +88,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleInvalidArgument(MethodArgumentNotValidException e,
             HttpServletRequest request) {
-
         Map<String, String> errors = e.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
                         FieldError::getField,
