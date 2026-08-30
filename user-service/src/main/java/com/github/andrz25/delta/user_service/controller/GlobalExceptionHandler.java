@@ -2,6 +2,7 @@ package com.github.andrz25.delta.user_service.controller;
 
 import com.github.andrz25.delta.user_service.exception.*;
 import com.github.andrz25.delta.user_service.response.ErrorResponse;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.security.core.AuthenticationException;
@@ -34,11 +35,45 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pd);
     }
 
-    @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException e) {
-        ErrorResponse error = new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage(), Instant.now());
+    @ExceptionHandler(DuplicateUsernameException.class)
+    public ResponseEntity<ProblemDetail> handleDuplicateUsername(DuplicateUsernameException e,
+            HttpServletRequest request) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        pd.setTitle("Username Already Exists");
+        pd.setInstance(URI.create(request.getRequestURI()));
+        pd.setProperty("timestamp", Instant.now().toString());
+        pd.setProperty("username", e.getUsername());
+        pd.setProperty("resourceType", "user");
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(pd);
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ProblemDetail> handleDuplicateEmail(DuplicateEmailException e, HttpServletRequest request) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+
+        pd.setTitle("Email Already Exists");
+        pd.setInstance(URI.create(request.getRequestURI()));
+        pd.setProperty("timestamp", Instant.now().toString());
+        pd.setProperty("Email", e.getEmail());
+        pd.setProperty("resourceType", "user");
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(pd);
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ProblemDetail> handleDuplicateResource(DuplicateResourceException e,
+            HttpServletRequest request) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+
+        pd.setTitle("Resource Already Exists");
+        pd.setInstance(URI.create(request.getRequestURI().toString()));
+        pd.setProperty("timestamp", Instant.now().toString());
+        pd.setProperty("resourceType", e.getResourceType());
+        pd.setProperty("fieldName", e.getFieldValue());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(pd);
     }
 
     @ExceptionHandler(AuthenticationException.class)

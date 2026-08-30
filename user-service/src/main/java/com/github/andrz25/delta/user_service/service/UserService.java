@@ -1,6 +1,7 @@
 package com.github.andrz25.delta.user_service.service;
 
-import com.github.andrz25.delta.user_service.exception.DuplicateResourceException;
+import com.github.andrz25.delta.user_service.exception.DuplicateEmailException;
+import com.github.andrz25.delta.user_service.exception.DuplicateUsernameException;
 import com.github.andrz25.delta.user_service.exception.UserNotFoundException;
 import com.github.andrz25.delta.user_service.model.Role;
 import com.github.andrz25.delta.user_service.model.User;
@@ -12,7 +13,6 @@ import com.github.andrz25.delta.user_service.response.UserResponse;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +30,11 @@ public class UserService {
 
     public UserResponse registerUser(UserRegistrationRequest request) {
         if (userRepository.existsByUsername(request.username())) {
-            throw new DuplicateResourceException("Username", request.username());
+            throw new DuplicateUsernameException(request.username());
         }
 
         if (userRepository.existsByEmail(request.email())) {
-            throw new DuplicateResourceException("Email", request.email());
+            throw new DuplicateEmailException(request.email());
         }
 
         User user = new User.Builder()
@@ -47,13 +47,9 @@ public class UserService {
                 .addRole(Role.USER)
                 .build();
 
-        try {
-            User saved = userRepository.save(user);
+        User saved = userRepository.save(user);
 
-            return new UserResponse(saved);
-        } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException("Username", request.username());
-        }
+        return new UserResponse(saved);
     }
 
     @Cacheable(value = "users")
@@ -67,7 +63,7 @@ public class UserService {
 
         return response;
     }
-    
+
     @CachePut(value = "users", key = "#id")
     public UserResponse updateUser(Long id, UserUpdateRequest request) {
         User user = userRepository
@@ -76,11 +72,11 @@ public class UserService {
                         () -> new UserNotFoundException(id));
 
         if (userRepository.existsByEmailAndIdNot(request.email(), id)) {
-            throw new DuplicateResourceException("Email", request.email());
+            throw new DuplicateEmailException(request.email());
         }
 
         if (userRepository.existsByUsernameAndIdNot(request.username(), id)) {
-            throw new DuplicateResourceException("Username", request.username());
+            throw new DuplicateUsernameException(request.username());
         }
 
         user.setFullName(request.fullName());
@@ -88,13 +84,9 @@ public class UserService {
         user.setEmail(request.email());
         user.setPhoneNumber(request.phoneNumber());
 
-        try {
-            User saved = userRepository.save(user);
+        User saved = userRepository.save(user);
 
-            return new UserResponse(saved);
-        } catch (DataIntegrityViolationException e) {
-            throw new DuplicateResourceException("Username", request.username());
-        }
+        return new UserResponse(saved);
     }
 
     @CacheEvict(value = "users", key = "#id")
