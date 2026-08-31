@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ProblemDetail> handleGeneric(Exception exception, HttpServletRequest request) {
+    public ResponseEntity<ProblemDetail> handleGeneric(Exception e, HttpServletRequest request) {
         String detail = "Server error, try again later!";
 
         return createProblemDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", detail, request, null);
