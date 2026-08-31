@@ -32,39 +32,24 @@ public class GlobalExceptionHandler {
         return createProblemDetail(HttpStatus.NOT_FOUND, "User Not Found", detail, request, properties);
     }
 
-    @ExceptionHandler(DuplicateUsernameException.class)
-    public ResponseEntity<ProblemDetail> handleDuplicateUsername(DuplicateUsernameException e,
-            HttpServletRequest request) {
-        Map<String, Object> properties = new HashMap<>();
-
-        properties.put("resourceType", "user");
-        properties.put("fieldName", e.getFieldValue());
-        properties.put("fieldValue", e.getFieldValue());
-
-        return createProblemDetail(HttpStatus.CONFLICT, "Username Already Exists", e.getMessage(), request, properties);
-    }
-
-    @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ProblemDetail> handleDuplicateEmail(DuplicateEmailException e, HttpServletRequest request) {
-        Map<String, Object> properties = new HashMap<>();
-
-        properties.put("resourceType", "user");
-        properties.put("fieldName", e.getFieldName());
-        properties.put("fieldValue", e.getFieldValue());
-
-        return createProblemDetail(HttpStatus.CONFLICT, "Email Already Exists", e.getMessage(), request, properties);
-    }
-
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ProblemDetail> handleDuplicateResource(DuplicateResourceException e,
             HttpServletRequest request) {
         Map<String, Object> properties = new HashMap<>();
 
-        properties.put("resourceType", e.getResourceType());
-        properties.put("fieldName", e.getFieldName());
-        properties.put("fieldValue", e.getFieldValue());
+        String resourceType = e.getResourceType();
+        String fieldName = e.getFieldName();
+        String fieldValue = e.getFieldValue();
 
-        return createProblemDetail(HttpStatus.CONFLICT, "Resource Already Exists", e.getMessage(), request, properties);
+        String detail = String.format(
+                "%s with %s '%s' already exists",
+                resourceType, fieldName, fieldValue);
+
+        properties.put("resourceType", resourceType);
+        properties.put("fieldName", fieldName);
+        properties.put("fieldValue", fieldValue);
+
+        return createProblemDetail(HttpStatus.CONFLICT, "Resource Already Exists", detail, request, properties);
     }
 
     @ExceptionHandler(AuthenticationException.class)
