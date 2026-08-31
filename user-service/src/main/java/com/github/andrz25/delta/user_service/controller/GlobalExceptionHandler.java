@@ -84,6 +84,13 @@ public class GlobalExceptionHandler {
                 request, Map.of("errors", errors));
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetail> handleGeneric(Exception exception, HttpServletRequest request) {
+        String detail = "Server error, try again later!";
+
+        return createProblemDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", detail, request, null);
+    }
+
     public ResponseEntity<ProblemDetail> createProblemDetail(HttpStatusCode status, String title, String detail,
             HttpServletRequest request, Map<String, Object> properties) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(status, detail);
