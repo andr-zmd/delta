@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -86,6 +87,13 @@ public class GlobalExceptionHandler {
                 "The request violates the constraints of the data",
                 request,
                 null);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ProblemDetail> handleMalformedJson(HttpMessageNotReadableException e,
+            HttpServletRequest request) {
+        return createProblemDetail(HttpStatus.BAD_REQUEST, "Malformed JSON",
+                "Request is invalid, ensure proper request format", request, null);
     }
 
     @ExceptionHandler(Exception.class)
