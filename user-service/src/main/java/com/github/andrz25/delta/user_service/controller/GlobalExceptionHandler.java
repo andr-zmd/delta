@@ -25,8 +25,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleUserDoesNotExist(UserNotFoundException e, HttpServletRequest request) {
         String detail = "User " + e.getUserId() + " not found";
 
-        return createProblemDetail(HttpStatus.NOT_FOUND, "User Not Found", detail, request,
-                Map.of("userId", e.getUserId()));
+        Map<String, Object> properties = new HashMap<>();
+
+        properties.put("userId", e.getUserId());
+
+        return createProblemDetail(HttpStatus.NOT_FOUND, "User Not Found", detail, request, properties);
     }
 
     @ExceptionHandler(DuplicateUsernameException.class)
@@ -80,8 +83,12 @@ public class GlobalExceptionHandler {
                         FieldError::getDefaultMessage,
                         (existing, replacement) -> existing + ", " + replacement));
 
+        Map<String, Object> properties = new HashMap<>();
+
+        properties.put("errors", errors);
+
         return createProblemDetail(HttpStatus.BAD_REQUEST, "Validation Error", "Validation failed for the given values",
-                request, Map.of("errors", errors));
+                request, properties);
     }
 
     @ExceptionHandler(Exception.class)
