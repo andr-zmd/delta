@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -74,6 +75,17 @@ public class GlobalExceptionHandler {
 
         return createProblemDetail(HttpStatus.BAD_REQUEST, "Validation Error", "Validation failed for the given values",
                 request, properties);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ProblemDetail> handleDataViolation(DataIntegrityViolationException e,
+            HttpServletRequest request) {
+        return createProblemDetail(
+                HttpStatus.CONFLICT,
+                "Data Integrity Error",
+                "The request violates the constraints of the data",
+                request,
+                null);
     }
 
     @ExceptionHandler(Exception.class)
